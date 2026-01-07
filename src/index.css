@@ -1,0 +1,415 @@
+:root {
+  --bg-color: #0f0f13;
+  --surface-color: #1c1c24;
+  --primary-color: #6366f1;
+  /* Indigo 500 */
+  --primary-glow: rgba(99, 102, 241, 0.4);
+  --text-primary: #ffffff;
+  --text-secondary: #9ca3af;
+  --border-radius: 12px;
+  --glass-bg: rgba(28, 28, 36, 0.7);
+  --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+#root {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Utilities */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: var(--glass-border);
+  border-radius: var(--border-radius);
+}
+
+.btn {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: 0 0 15px var(--primary-glow);
+  white-space: nowrap;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 25px var(--primary-glow);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: none;
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: none;
+}
+
+.btn-icon {
+  padding: 6px;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+}
+
+.btn-icon-sm {
+  padding: 4px;
+  width: 24px;
+  height: 24px;
+}
+
+.text-secondary {
+  color: var(--text-secondary);
+}
+
+input {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.75rem;
+  border-radius: 8px;
+  color: white;
+  outline: none;
+  transition: border-color 0.2s;
+  width: 100%;
+}
+
+input:focus {
+  border-color: var(--primary-color);
+}
+
+/* Layout */
+.container {
+  width: 100%;
+  max-width: 1800px;
+  margin: 0 auto;
+  padding: 1rem;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Connection Panel */
+.connection-panel {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.header-info {
+  flex: 1;
+  min-width: 250px;
+}
+
+.app-title {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(to right, #fff, #a5b4fc);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.id-display {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.id-code {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: monospace;
+  user-select: all;
+  font-size: 0.9rem;
+}
+
+.connect-form {
+  display: flex;
+  gap: 0.5rem;
+  flex: 2;
+  min-width: 300px;
+}
+
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.status-connected {
+  background: rgba(5, 150, 105, 0.2);
+  color: #34d399;
+  border: 1px solid rgba(5, 150, 105, 0.4);
+}
+
+.status-disconnected {
+  background: rgba(220, 38, 38, 0.2);
+  color: #f87171;
+  border: 1px solid rgba(220, 38, 38, 0.4);
+}
+
+/* Main Grid */
+.main-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(300px, 1fr);
+  gap: 1.5rem;
+  flex-grow: 1;
+  height: 100%;
+  /* Important for fit */
+}
+
+.video-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-height: 0;
+  /* Fix flex overflow */
+}
+
+.video-container {
+  position: relative;
+  width: 100%;
+  background: black;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  aspect-ratio: 16/9;
+  /* Native aspect ratio */
+}
+
+/* ReactPlayer wrapper */
+.main-video {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* YouTube player container */
+#youtube-player {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Ensure iframe inside fills container */
+.main-video>div,
+.main-video iframe,
+.main-video video,
+#youtube-player iframe {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.input-group {
+  padding: 1rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* Sidebar */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  overflow-y: auto;
+}
+
+.webcam-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.webcam-feed {
+  aspect-ratio: 16/9;
+  /* Make webcams wider */
+  background: #2a2a35;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.webcam-feed video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1);
+}
+
+.webcam-label {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  pointer-events: none;
+}
+
+.webcam-controls {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.webcam-feed:hover .webcam-controls {
+  opacity: 1;
+}
+
+.info-panel {
+  padding: 1.5rem;
+  flex-grow: 1;
+}
+
+.info-panel ul {
+  padding-left: 1.2rem;
+  margin-top: 0.5rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+.camera-off-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+
+/* Responsive Media Queries */
+@media (max-width: 1024px) {
+  .container {
+    padding: 0.5rem;
+    gap: 1rem;
+  }
+
+  .connection-panel {
+    padding: 1rem;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .header-info,
+  .connect-form {
+    width: 100%;
+  }
+
+  .main-grid {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .webcam-grid {
+    flex-direction: row;
+    /* Horizontal webcams on mobile/tablet */
+    overflow-x: auto;
+  }
+
+  .webcam-feed {
+    min-width: 160px;
+    aspect-ratio: 4/3;
+  }
+
+  .video-container::before {
+    display: none;
+    /* Let video dictate height on mobile stack */
+  }
+
+  .video-container {
+    aspect-ratio: 16/9;
+  }
+}
+
+@media (max-width: 640px) {
+  .app-title {
+    font-size: 1.25rem;
+  }
+
+  .main-grid {
+    gap: 1rem;
+  }
+
+  .video-container {
+    border-radius: 8px;
+    /* Smaller radius for mobile */
+  }
+
+  .id-code {
+    font-size: 0.8rem;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 150px;
+  }
+
+  .webcam-controls {
+    opacity: 1;
+    /* Always show controls on mobile */
+  }
+
+  /* Stack buttons in input group */
+  .input-group {
+    flex-direction: column;
+  }
+
+  .input-group button {
+    width: 100%;
+  }
+}
