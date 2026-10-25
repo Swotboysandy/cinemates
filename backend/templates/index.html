@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insta Reel Downloader</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --bg-color: #0f0f13;
+            --surface-color: #1c1c24;
+            --primary-color: #6366f1;
+            --primary-glow: rgba(99, 102, 241, 0.4);
+            --text-primary: #ffffff;
+            --text-secondary: #9ca3af;
+            --glass-bg: rgba(28, 28, 36, 0.7);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0f0f13 0%, #1a1a2e 50%, #0f0f13 100%);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            padding: 2rem;
+        }
+
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            border: var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            background: linear-gradient(to right, #fff, #a5b4fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 1rem 1rem 3rem;
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        .btn {
+            width: 100%;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px var(--primary-glow);
+        }
+
+        .btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status-area {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            display: none;
+        }
+
+        .status-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary-color);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .result-list {
+            margin-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .result-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            padding: 0.5rem;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .result-item.success {
+            color: #4ade80;
+        }
+
+        .result-item.error {
+            color: #f87171;
+        }
+
+        .spin {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="header">
+                <i data-lucide="instagram" color="#e1306c" size="32"></i>
+                <h1>Reel Downloader</h1>
+            </div>
+
+            <div class="input-group">
+                <i data-lucide="link" class="input-icon" size="20"></i>
+                <input type="text" id="urlInput" placeholder="Paste Reel or Profile URL here...">
+            </div>
+
+            <button class="btn" onclick="startDownload()" id="downloadBtn">
+                <i data-lucide="download"></i>
+                Download
+            </button>
+
+            <div class="status-area" id="statusArea">
+                <div class="status-header">
+                    <span id="statusText">Starting...</span>
+                    <span id="progressText">0/0</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="result-list" id="resultList"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        let taskId = null;
+        let pollInterval = null;
+
+        async function startDownload() {
+            const url = document.getElementById('urlInput').value.trim();
+            if (!url) return;
+
+            const btn = document.getElementById('downloadBtn');
+            const statusArea = document.getElementById('statusArea');
+            const resultList = document.getElementById('resultList');
+
+            // Reset UI
+            btn.disabled = true;
+            btn.innerHTML = '<i data-lucide="loader-2" class="spin"></i> Processing...';
+            lucide.createIcons();
+
+            statusArea.style.display = 'block';
+            resultList.innerHTML = '';
+            document.getElementById('progressFill').style.width = '0%';
+            document.getElementById('statusText').innerText = 'Initializing...';
+
+            try {
+                const response = await fetch('/api/download', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ urls: [url] })
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                taskId = data.task_id;
+                pollInterval = setInterval(pollStatus, 1000);
+
+            } catch (err) {
+                alert('Error: ' + err.message);
+                resetUI();
+            }
+        }
+
+        async function pollStatus() {
+            if (!taskId) return;
+
+            try {
+                const response = await fetch(`/api/download/${taskId}`);
+                const data = await response.json();
+
+                // Update Progress
+                const total = data.total || 0;
+                const current = data.current || 0;
+                const status = data.status;
+
+                document.getElementById('statusText').innerText = status;
+
+                if (total > 0) {
+                    const percent = (current / total) * 100;
+                    document.getElementById('progressFill').style.width = `${percent}%`;
+                    document.getElementById('progressText').innerText = `${current}/${total}`;
+                }
+
+                if (status === 'completed') {
+                    clearInterval(pollInterval);
+                    showResults(data.results);
+                    resetUI();
+                    document.getElementById('statusText').innerText = 'Download Complete!';
+                    document.getElementById('progressFill').style.width = '100%';
+                }
+
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function showResults(results) {
+            const list = document.getElementById('resultList');
+            list.innerHTML = '';
+
+            results.forEach(res => {
+                const div = document.createElement('div');
+                div.className = `result-item ${res.success ? 'success' : 'error'}`;
+
+                const icon = res.success ? 'check-circle' : 'x-circle';
+                div.innerHTML = `
+                    <i data-lucide="${icon}" size="16"></i>
+                    <span>${res.success ? 'Downloaded' : 'Failed'}: ${res.url.substring(0, 30)}...</span>
+                `;
+                list.appendChild(div);
+            });
+            lucide.createIcons();
+        }
+
+        function resetUI() {
+            const btn = document.getElementById('downloadBtn');
+            btn.disabled = false;
+            btn.innerHTML = '<i data-lucide="download"></i> Download';
+            lucide.createIcons();
+        }
+    </script>
+</body>
+
+</html>

@@ -13,5 +13,12 @@ export default defineConfig({
     port: 5173,
     strictPort: true, // Fail if port is busy, don't auto-switch
     allowedHosts: true, // Allow tunneling
+    proxy: {
+      '/peerjs': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        ws: true
+      }
+    }
   }
 })
